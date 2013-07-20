@@ -1,6 +1,6 @@
 {
   "name": "crtrdg-scene",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "scene module for crtrdg games",
   "main": "index.js",
   "scripts": {
