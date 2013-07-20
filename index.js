@@ -3,9 +3,8 @@ var inherits = require('inherits');
 
 module.exports = SceneManager;
 
-function SceneManager(options){
-  this.game = options.game || {};
-  this.game.scenes = options.scenes || [];
+function SceneManager(game){
+  this.game = game || {};
 
   this.game.sceneManager = this;
   this.game.currentScene = null;
