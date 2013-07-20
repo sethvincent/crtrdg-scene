@@ -1,0 +1,36 @@
+{
+  "name": "crtrdg-scene",
+  "version": "0.0.0",
+  "description": "scene module for crtrdg games",
+  "main": "index.js",
+  "scripts": {
+    "test": "beefy test.js:bundle.js --live"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/sethvincent/crtrdg-scene.git"
+  },
+  "keywords": [
+    "games",
+    "html",
+    "canvas",
+    "animation",
+    "requestAnimationFrame",
+    "game library",
+    "scene",
+    "crtrdg"
+  ],
+  "author": {
+    "name": "Seth Vincent",
+    "email": "sethvincent@gmail.com",
+    "url": "http://sethvincent.com"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "inherits": "~2.0.0"
+  },
+  "devDependencies": {
+    "crtrdg-gameloop": "~0.0.3",
+    "crtrdg-mouse": "~0.0.1"
+  }
+}
