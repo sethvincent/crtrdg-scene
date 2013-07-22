@@ -5,7 +5,7 @@ module.exports = SceneManager;
 
 function SceneManager(game){
   this.game = game || {};
-
+  this.game.scenes = [];
   this.game.sceneManager = this;
   this.game.currentScene = null;
 
