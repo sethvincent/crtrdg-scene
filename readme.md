@@ -76,7 +76,7 @@ var scene = sceneManager.create({
   backgroundColor: '#e1f23f'
 });
 
-scene.on('init', sceneSwitch);
+scene.on('start', sceneSwitch);
 
 sceneManager.set(scene);
 
