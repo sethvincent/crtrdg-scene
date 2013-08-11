@@ -8,6 +8,7 @@ function SceneManager(game){
   this.game.scenes = [];
   this.game.sceneManager = this;
   this.game.currentScene = null;
+  this.game.previousScene = null;
 
   return this;
 };
@@ -25,8 +26,11 @@ SceneManager.prototype.create = function(options){
 };
 
 SceneManager.prototype.set = function(scene){
+  if (this.game.currentScene !== null) {
+    this.game.currentScene.emit('end');
+  }
   this.game.currentScene = scene;
-  scene.emit('init');
+  scene.emit('start');
 };
 
 SceneManager.prototype.get = function(sceneName){
