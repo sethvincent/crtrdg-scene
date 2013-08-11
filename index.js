@@ -30,7 +30,7 @@ SceneManager.prototype.set = function(scene){
     this.game.currentScene.emit('end');
   }
   this.game.currentScene = scene;
-  scene.emit('start');
+  scene.emit('start', scene);
 };
 
 SceneManager.prototype.get = function(sceneName){

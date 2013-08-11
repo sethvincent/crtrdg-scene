@@ -9,6 +9,17 @@ var game = new Game({
   backgroundColor: '#ff1f1f',
 });
 
+var mouse = new Mouse(game);
+
+mouse.on('click', function(location){
+  console.log(game)
+  if (game.currentScene.name === 'first scene'){
+    sceneManager.set(sceneTwo);
+  } else {
+    sceneManager.set(scene);
+  }
+});
+
 var firstScene, secondScene;
 game.on('update', function(interval){
   firstScene = sceneManager.get('first scene');
@@ -17,19 +28,7 @@ game.on('update', function(interval){
   console.log(secondScene)
 });
 
-var mouse = new Mouse(game);
-
-mouse.on('click', function(location){
-  if (game.currentScene.name === 'first scene'){
-    sceneManager.set(sceneTwo);
-  } else {
-    sceneManager.set(scene);
-  }
-});
-
-var sceneManager = new SceneManager({
-  game: game
-});
+var sceneManager = new SceneManager(game);
 
 var scene = sceneManager.create({
   name: 'first scene',
@@ -51,7 +50,7 @@ function setMessage(text){
   document.getElementById('scene-name').innerHTML = text;
 }
 
-function sceneSwitch(){
-  console.log(this.name)
-  setMessage(this.name);
+function sceneSwitch(scene){
+  console.log(scene.name)
+  setMessage(scene.name);
 }
