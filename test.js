@@ -1,50 +1,48 @@
 var Game = require('crtrdg-gameloop');
 var Mouse = require('crtrdg-mouse')
-var SceneManager = require('./index');
+var Scenes = require('./index');
 
 var game = new Game({
-  canvasId: 'game',
+  canvas: 'game',
   width: '800',
-  height: '400',
-  backgroundColor: '#ff1f1f',
+  height: '400'
 });
 
 var mouse = new Mouse(game);
 
 mouse.on('click', function(location){
-  console.log(game)
-  if (game.currentScene.name === 'first scene'){
-    sceneManager.set(sceneTwo);
-  } else {
-    sceneManager.set(scene);
-  }
+  if (scenes.active.name === 'first scene') scenes.set(sceneTwo);
+  else scenes.set(scene);
 });
 
-var firstScene, secondScene;
-game.on('update', function(interval){
-  firstScene = sceneManager.get('first scene');
-  console.log(firstScene)
-  secondScene = sceneManager.get('second scene');
-  console.log(secondScene)
-});
+var scenes = new Scenes(game);
 
-var sceneManager = new SceneManager(game);
-
-var scene = sceneManager.create({
-  name: 'first scene',
-  backgroundColor: '#e1f23f'
+var scene = scenes.create({
+  name: 'first scene'
 });
 
 scene.on('start', sceneSwitch);
 
-sceneManager.set(scene);
+scene.on('draw', function(c){
+  console.log('scene one drawing')
+  c.fillStyle = '#e1f23f';
+  c.fillRect(0, 0, game.width, game.height);
+});
 
-var sceneTwo = sceneManager.create({
+scenes.set(scene);
+
+var sceneTwo = scenes.create({
   name: 'second scene',
   backgroundColor: '#7def71'
 });
 
 sceneTwo.on('start', sceneSwitch);
+
+sceneTwo.on('draw', function(c){
+  console.log('scene two drawing')
+  c.fillStyle = sceneTwo.backgroundColor;
+  c.fillRect(0, 0, game.width, game.height);
+});
 
 function setMessage(text){
   document.getElementById('scene-name').innerHTML = text;

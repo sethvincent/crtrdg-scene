@@ -1,52 +1,47 @@
 var EventEmitter = require('events').EventEmitter;
 var inherits = require('inherits');
 
-module.exports = SceneManager;
+module.exports = Scenes;
 
-function SceneManager(game){
+function Scenes(game){
   this.game = game || {};
-  this.game.scenes = [];
-  this.game.sceneManager = this;
-  this.game.currentScene = null;
-  this.game.previousScene = null;
+  this.scenes = [];
+  this.active = null;
+  this.previous = null;
+  var self = this;
 
+  this.game.on('update', function(interval){
+    if (self.active) self.active.update(interval);
+  });
+
+  this.game.on('draw', function(context){
+    if (self.active) self.active.draw(context);
+  });
+};
+
+Scenes.prototype.add = function(scene){
+  this.scenes.push(scene);
   return this;
 };
 
-SceneManager.prototype.add = function(scene){
-  this.game.scenes.push(scene);
-
-  return this;
-};
-
-SceneManager.prototype.create = function(options){
+Scenes.prototype.create = function(options){
   var scene = new Scene(options);
   this.add(scene);
   return scene;
 };
 
-SceneManager.prototype.set = function(scene){
-  if (this.game.currentScene !== null) {
-    this.game.currentScene.emit('end');
-  }
-  this.game.currentScene = scene;
+Scenes.prototype.set = function(scene){
+  if (this.active !== null) this.active.emit('end');
+  this.active = scene;
   scene.emit('start', scene);
 };
 
-SceneManager.prototype.get = function(sceneName){
-  for (var i=0; i<this.game.scenes.length; i++){
-    if (this.game.scenes[i].name === sceneName) {
-      return this.game.scenes[i];
+Scenes.prototype.get = function(sceneName){
+  for (var i=0; i<this.scenes.length; i++){
+    if (this.scenes[i].name === sceneName) {
+      return this.scenes[i];
     }
   }
-};
-
-SceneManager.prototype.update = function(interval){
-  this.game.currentScene.update(interval);
-};
-
-SceneManager.prototype.draw = function(context){
-  this.game.currentScene.draw(context);
 };
 
 
@@ -54,10 +49,9 @@ exports.Scene = Scene;
 inherits(Scene, EventEmitter);
 
 function Scene(options){
-  this.name = options.name;
-  this.backgroundColor = options.backgroundColor;
-
-  return this;
+  for (var key in options){
+    this[key] = options[key];
+  }
 }
 
 Scene.prototype.update = function(interval){
