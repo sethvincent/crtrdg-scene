@@ -1,63 +1,67 @@
-var EventEmitter = require('events').EventEmitter;
-var inherits = require('inherits');
+var EventEmitter = require('events').EventEmitter
+var inherits = require('inherits')
 
-module.exports = Scenes;
+module.exports = function createScenes (options) {
+  options = options || {}
+  var sceneList = options.scenes || []
 
-function Scenes(game){
-  this.game = game || {};
-  this.scenes = [];
-  this.active = null;
-  this.previous = null;
-  var self = this;
+  function scenes (options) {
+    var scene = Scene(options)
+    sceneList.push(scene)
+    return scene
+  }
 
-  this.game.on('update', function(interval){
-    if (self.active) self.active.update(interval);
-  });
+  scenes.active = null
+  scenes.previous = null
 
-  this.game.on('draw', function(context){
-    if (self.active) self.active.draw(context);
-  });
-};
+  scenes.create = function (options) {
+    var scene = Scene(options)
+    sceneList.push(scene)
+    return scene
+  }
 
-Scenes.prototype.add = function(scene){
-  this.scenes.push(scene);
-  return this;
-};
+  scenes.set = function (scene) {
+    if (this.active !== null) this.active.emit('end')
+    if (typeof scene === 'string') {
+      scene = scenes.get(scene)
+    }
+    this.active = scene
+    scene.emit('start', scene)
+  }
 
-Scenes.prototype.create = function(options){
-  var scene = new Scene(options);
-  this.add(scene);
-  return scene;
-};
-
-Scenes.prototype.set = function(scene){
-  if (this.active !== null) this.active.emit('end');
-  this.active = scene;
-  scene.emit('start', scene);
-};
-
-Scenes.prototype.get = function(sceneName){
-  for (var i=0; i<this.scenes.length; i++){
-    if (this.scenes[i].name === sceneName) {
-      return this.scenes[i];
+  scenes.get = function (sceneName) {
+    for (var i = 0; i < this.scenes.length; i++) {
+      if (this.scenes[i].name === sceneName) {
+        return this.scenes[i]
+      }
     }
   }
-};
 
+  scenes.update = function (dt) {
+    scenes.active.update(dt)
+  }
 
-exports.Scene = Scene;
-inherits(Scene, EventEmitter);
+  scenes.draw = function (context) {
+    scenes.active.draw(context)
+  }
 
-function Scene(options){
-  for (var key in options){
-    this[key] = options[key];
+  return scenes
+}
+
+exports.Scene = Scene
+inherits(Scene, EventEmitter)
+
+function Scene (options) {
+  if (!(this instanceof Scene)) return new Scene(options)
+  for (var key in options) {
+    this[key] = options[key]
   }
 }
 
-Scene.prototype.update = function(interval){
+Scene.prototype.update = function (interval) {
   this.emit('update', interval)
-};
+}
 
-Scene.prototype.draw = function(context){
-  this.emit('draw', context);
-};
+Scene.prototype.draw = function (context) {
+  this.emit('draw', context)
+}

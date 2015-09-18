@@ -1,10 +1,10 @@
 {
   "name": "crtrdg-scene",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "scene module for crtrdg games",
   "main": "index.js",
   "scripts": {
-    "test": "beefy test.js:bundle.js --live"
+    "start": "budo example.js:bundle.js --live"
   },
   "repository": {
     "type": "git",
@@ -30,6 +30,7 @@
     "inherits": "~2.0.0"
   },
   "devDependencies": {
+    "budo": "^4.2.1",
     "crtrdg-gameloop": "~0.2.0",
     "crtrdg-mouse": "~0.0.3"
   }

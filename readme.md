@@ -38,62 +38,65 @@ npm install -g browserify beefy
 
 ### Create a game.js file:
 ```
-var Game = require('crtrdg-gameloop');
+var Game = require('crtrdg-gameloop')
 var Mouse = require('crtrdg-mouse')
-var SceneManager = require('crtrdg-scene');
+var scenes = require('crtrdg-scene')()
 
 var game = new Game({
-  canvasId: 'game',
+  canvas: 'game',
   width: '800',
-  height: '400',
-  backgroundColor: '#ff1f1f',
-});
+  height: '400'
+})
 
-var firstScene, secondScene;
-game.on('update', function(interval){
-  firstScene = sceneManager.get('first scene');
-  console.log(firstScene)
-  secondScene = sceneManager.get('second scene');
-  console.log(secondScene)
-});
+game.on('update', function (dt) {
+  scenes.update(dt)
+})
 
-var mouse = new Mouse(game);
+game.on('draw', function (context) {
+  scenes.draw(context)
+})
 
-mouse.on('click', function(location){
-  if (game.currentScene.name === 'first scene'){
-    sceneManager.set(sceneTwo);
-  } else {
-    sceneManager.set(scene);
-  }
-});
+var mouse = new Mouse(game)
 
-var sceneManager = new SceneManager({
-  game: game
-});
+mouse.on('click', function (location) {
+  if (scenes.active.name === 'first scene') scenes.set(sceneTwo)
+  else scenes.set(scene)
+})
 
-var scene = sceneManager.create({
-  name: 'first scene',
-  backgroundColor: '#e1f23f'
-});
+var scene = scenes({
+  name: 'first scene'
+})
 
-scene.on('start', sceneSwitch);
+scene.on('start', sceneSwitch)
 
-sceneManager.set(scene);
+scene.on('draw', function (c) {
+  console.log('scene one drawing')
+  c.fillStyle = '#e1f23f'
+  c.fillRect(0, 0, game.width, game.height)
+})
 
-var sceneTwo = sceneManager.create({
+scenes.set(scene)
+
+var sceneTwo = scenes({
   name: 'second scene',
   backgroundColor: '#7def71'
-});
+})
 
-sceneTwo.on('init', sceneSwitch);
+sceneTwo.on('start', sceneSwitch)
 
-function setMessage(text){
-  document.getElementById('scene-name').innerHTML = text;
+sceneTwo.on('draw', function (c) {
+  console.log('scene two drawing')
+  c.fillStyle = sceneTwo.backgroundColor
+  c.fillRect(0, 0, game.width, game.height)
+})
+
+function setMessage (text) {
+  document.getElementById('scene-name').innerHTML = text
 }
 
-function sceneSwitch(){
-  console.log(this.name)
-  setMessage(this.name);
+function sceneSwitch (scene) {
+  console.log(scene.name)
+  setMessage(scene.name)
 }
 ```
 
