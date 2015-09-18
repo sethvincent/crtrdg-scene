@@ -6,33 +6,32 @@ module.exports = function createScenes (options) {
   var sceneList = options.scenes || []
 
   function scenes (options) {
-    var scene = Scene(options)
-    sceneList.push(scene)
-    return scene
+    return createScene(options)
   }
 
   scenes.active = null
   scenes.previous = null
 
-  scenes.create = function (options) {
+  function createScene (options) {
     var scene = Scene(options)
     sceneList.push(scene)
     return scene
   }
 
   scenes.set = function (scene) {
-    if (this.active !== null) this.active.emit('end')
+    scenes.previous = scenes.active
+    if (scenes.active !== null) scenes.active.emit('end')
     if (typeof scene === 'string') {
       scene = scenes.get(scene)
     }
-    this.active = scene
+    scenes.active = scene
     scene.emit('start', scene)
   }
 
   scenes.get = function (sceneName) {
-    for (var i = 0; i < this.scenes.length; i++) {
-      if (this.scenes[i].name === sceneName) {
-        return this.scenes[i]
+    for (var i = 0; i < sceneList.length; i++) {
+      if (sceneList[i].name === sceneName) {
+        return sceneList[i]
       }
     }
   }
@@ -45,6 +44,7 @@ module.exports = function createScenes (options) {
     scenes.active.draw(context)
   }
 
+  scenes.create = createScene
   return scenes
 }
 
